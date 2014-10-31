@@ -22,7 +22,7 @@ azn.jws = (function() {
 				output.name = "HMAC";
 				output.hash = "SHA-512";
 			} else {
-				throw new Error("unsupported signature outputorithm");
+				throw new Error("unsupported signature algorithm");
 			}
 			return output;
 	}
