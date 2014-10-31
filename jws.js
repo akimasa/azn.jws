@@ -80,7 +80,6 @@ azn.jws = (function() {
 			header = btoa(header).replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"");
 			data = JSON.stringify(data);
 			data = btoa(data).replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"");
-			console.log(header,data);
 			var signinput = header + "." + data;
 			var signinputstr = signinput;
 			signinput = (new TextEncoder()).encode(signinput);
@@ -93,12 +92,10 @@ azn.jws = (function() {
 						false,
 						["sign"]
 						).then(function(key){
-							console.log(key);
 							return crypto.subtle.sign(alg.name,key,signinput);
 						}).then(function(sign){
 							return new Promise(function(resolve, reject){
 								sign = new Uint8Array(sign);
-								console.log(azn.b64url.encode(sign));
 								resolve(signinputstr+"."+azn.b64url.encode(sign));
 							});
 						});
@@ -114,7 +111,6 @@ azn.jws = (function() {
 						}).then(function(sign){
 							return new Promise(function(resolve, reject){
 								sign = new Uint8Array(sign);
-								console.log(azn.b64url.encode(sign));
 								resolve(signinputstr+"."+azn.b64url.encode(sign));
 							});
 						});
