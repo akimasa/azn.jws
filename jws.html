@@ -7,8 +7,8 @@ function print(x){
 function ver(x,jws){
 	azn.jws.verify(x,jws).then(print);
 }
-function sig(key,data){
-	azn.jws.sign(key,data).then(print);
+function sig(key,alg,data){
+	azn.jws.sign(key,alg,data).then(print);
 }
 //usage
 //azn.jws.verify(key,jws);
@@ -17,8 +17,9 @@ function sig(key,data){
 
 ver('{"kty":"RSA","n":"ofgWCuLjybRlzo0tZWJjNiuSfb4p4fAkd_wWJcyQoTbji9k0l8W26mPddxHmfHQp-Vaw-4qPCJrcS2mJPMEzP1Pt0Bm4d4QlL-yRT-SFd2lZS-pCgNMsD1W_YpRPEwOWvG6b32690r2jZ47soMZo9wGzjb_7OMg0LOL-bSf63kpaSHSXndS5z5rexMdbBYUsLA9e-KXBdQOS-UTo7WTBEMa2R2CapHg665xsmtdVMTBQY4uDZlxvb3qCo5ZwKh9kG4LT6_I5IhlJH7aGhyxXFvUK-DWNmoudF8NAco9_h9iaGNj8q2ethFkMLs91kzk2PAcDTW9gb54h4FRWyuXpoQ","e":"AQAB","d":"Eq5xpGnNCivDflJsRQBXHx1hdR1k6Ulwe2JZD50LpXyWPEAeP88vLNO97IjlA7_GQ5sLKMgvfTeXZx9SE-7YwVol2NXOoAJe46sui395IW_GO-pWJ1O0BkTGoVEn2bKVRUCgu-GjBVaYLU6f3l9kJfFNS3E0QbVdxzubSu3Mkqzjkn439X0M_V51gfpRLI9JYanrC4D4qAdGcopV_0ZHHzQlBjudU2QvXt4ehNYTCBr6XCLQUShb1juUO1ZdiYoFaFQT5Tw8bGUl_x_jTj3ccPDVZFD9pIuhLhBOneufuBiB4cS98l2SR_RQyGWSeWjnczT0QU91p1DhOVRuOopznQ"}','eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw');
 
-//azn.jws.sign(key,data);
+//azn.jws.sign(key,alg,data);
 //key = JSON Web Key(string. Not Key) || HMAC Key(string. not ArrayBuffer)
+//alg = algorithm(eg. "RS256")
 //data = Object
 sig('{"alg":"RS256","d":"gp_7WimaDXeJTwo81Ezaa7qW5-Li3Yj7PWJsEEQk5une0U9YlzPhU_rE4tyt0iS9A89MZs0jWp4ud9IOUuTZtgsO7CIme5vQADMYEZt-1cYberLpBSTITR9KoHP8IoMJ76jAgfN8LF0aLl2RPu4SXnyr7w5KHECFDdNQqT8tWxk","dp":"Tyv_WF1r0N3Rj0RX_Qtz99eX7bpxJ-B4KYu0D_sezvKECYLcpwjP8nAQqh09BBWDwPWmNSicmlINRKfN3fOacQ","dq":"f9UuZA4W7NxvFHczrUwkeuibM7y5TAaIMfeFoBPM9zV-YYO8VgDS-cm8KSAT10FlXT_wRqDOCWDdU3rP93p80w","e":"AQAB","ext":true,"key_ops":["sign"],"kty":"RSA","n":"oLee2dDJRg0f0aXqGLYWDZPCw2xe7nUFmJTXXPqrvr82gaisW5sdE3cM6rxhxNv1xnuEVyG9RXlqhY2z6jcF1d9dGGbilZbVUwCWjy4Zg5VNzl_EUPTGERK8DUXtV0uQ-lzknyKRbNWQv_6MwP33lr6Ri5ntjbFxrg7M7htFJkU","p":"zXGXcEbAptFl5m99nza-6x1u50qsGIFrYhOZdX2YeDAyj0Y0e_XafQpUb7hjl2uF8dLTGtQl-svvsBjWyKF0Fw","q":"yERhpsRxuDztE-JbkGcD9z5Q9soiwGLR9yyBUPoNUoZ06hlI_67JfAeZpjoz-b26lWL-Tu_UfbBzLCQs7oHGAw","qi":"JO5W_V1rKKYUGqHw4gAPmDJw3VDqQWu0yYn6zmyvIf9R_MGO-Unm_bC1xhZPjRL24ULjB13fniAEDq3PO7JTXA"}',"RS256",{hello:"world"}).then(function(x){console.log(x)});
 </script>
