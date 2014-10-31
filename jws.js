@@ -60,7 +60,7 @@ azn.jws = (function() {
 		},
 		sign: function(key,_alg,data){
 			var alg = parsealg(_alg);
-			var header = { alg: alg };
+			var header = { alg: _alg };
 			header = JSON.stringify(header);
 			header = btoa(header).replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"");
 			data = JSON.stringify(data);
