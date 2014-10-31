@@ -84,22 +84,37 @@ azn.jws = (function() {
 			var signinputstr = signinput;
 			signinput = (new TextEncoder()).encode(signinput);
 			if(alg.name == "RSASSA-PKCS1-v1_5"){
-				var x = JSON.parse(key);
-				x.alg = _alg;//TODO: autodetect alg
-				return crypto.subtle.importKey("jwk",
-						x,
-						alg,
-						false,
-						["sign"]
-						).then(function(key){
-							return crypto.subtle.sign(alg.name,key,signinput);
-						}).then(function(sign){
+				if(typeof key == "string" || key.toString().slice(8,-1) == "Object") {
+					if(typeof key == "string"){
+						key = JSON.parse(key);
+					}
+					key.alg = _alg;//TODO: autodetect alg
+					return crypto.subtle.importKey("jwk",
+							key,
+							alg,
+							false,
+							["sign"]
+							).then(function(key){
+								return crypto.subtle.sign(alg.name,key,signinput);
+							}).then(function(sign){
+								return new Promise(function(resolve, reject){
+									sign = new Uint8Array(sign);
+									resolve(signinputstr+"."+azn.b64url.encode(sign));
+								});
+							});
+				} else if (key.toString().slice(8,-1) == "CryptoKey") {
+					return crypto.subtle.sign(alg.name,key,signinput)
+						.then(function(sign){
 							return new Promise(function(resolve, reject){
 								sign = new Uint8Array(sign);
 								resolve(signinputstr+"."+azn.b64url.encode(sign));
 							});
 						});
+				} else {
+					throw new Error("invalid key for sign");
+				}
 			} else if (alg.name == "HMAC") {
+				if(typeof key == "string"){
 				key = (new TextEncoder()).encode(key);
 				return crypto.subtle.importKey("raw",
 						key,
@@ -114,6 +129,16 @@ azn.jws = (function() {
 								resolve(signinputstr+"."+azn.b64url.encode(sign));
 							});
 						});
+				} else if (key.toString().slice(8,-1) == "CryptoKey") {
+							return crypto.subtle.sign(alg.name,key,signinput).then(function(sign){
+								return new Promise(function(resolve, reject){
+									sign = new Uint8Array(sign);
+									resolve(signinputstr+"."+azn.b64url.encode(sign));
+								});
+							});
+				} else {
+					throw new Error("invalid key for sign");
+				}
 			}
 		},
 	};
