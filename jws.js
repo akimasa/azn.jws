@@ -36,26 +36,41 @@ azn.jws = (function() {
 			var header = JSON.parse(atob(jws[0]));
 			var alg = parsealg(header.alg);
 			if(alg.name == "RSASSA-PKCS1-v1_5"){
-			x = JSON.parse(x);
-			x = { e: x.e,n: x.n,kty: x.kty };//filter unnecessary value
-			return crypto.subtle.importKey("jwk",
-				x,
-				alg,
-				true,
-				["verify"]
-				).then(function(key){
-					return crypto.subtle.verify(alg.name,key,sig,data);
-				});
+				if(typeof x == "string" || x.toString().slice(8,-1) == "Object") {
+					if(typeof x == "string"){
+						x = JSON.parse(x);
+					}
+					x = { e: x.e,n: x.n,kty: x.kty };//filter unnecessary value
+					return crypto.subtle.importKey("jwk",
+							x,
+							alg,
+							true,
+							["verify"]
+							).then(function(key){
+								return crypto.subtle.verify(alg.name,key,sig,data);
+							});
+				} else if (x.toString().slice(8,-1) == "CryptoKey") {
+					return crypto.subtle.verify(alg.name,x,sig,data);
+				} else {
+					throw new Error("invalid key for verify");
+				}
 			} else if (alg.name == "HMAC") {
-				x = (new TextEncoder()).encode(x);
-				return crypto.subtle.importKey("raw",
-						x,
-						alg,
-						true,
-						["verify"]
-						).then(function(key){
-							return crypto.subtle.verify(alg.name,key,sig,data);
-						});
+				if(typeof x == "string"){
+					x = (new TextEncoder()).encode(x);
+					return crypto.subtle.importKey("raw",
+							x,
+							alg,
+							true,
+							["verify"]
+							).then(function(key){
+								return crypto.subtle.verify(alg.name,key,sig,data);
+							});
+				} else if (x.toString().slice(8,-1) == "CryptoKey") {
+					return crypto.subtle.verify(alg.name,x,sig,data);
+				} else {
+					throw new Error("invalid key for verify");
+				}
+
 			}
 		},
 		sign: function(key,_alg,data){
