@@ -31,7 +31,6 @@ azn.jws = (function() {
 	}
 	function isArrayBufferorArrayBufferView(input){
 		var inputType = Object.prototype.toString.call(input).slice(8,-1);
-		console.log(inputType);
 		if(typeof input == "string"){
 			return false;
 		}
@@ -84,7 +83,6 @@ azn.jws = (function() {
 					if(typeof x == "string"){
 						x = (new TextEncoder()).encode(x);
 					}
-					console.log("verifykey:",x);
 					return crypto.subtle.importKey("raw",
 							x,
 							alg,
@@ -143,7 +141,6 @@ azn.jws = (function() {
 				}
 			} else if (alg.name == "HMAC") {
 				if(typeof key == "string" || isArrayBufferorArrayBufferView(key)){
-					console.log(typeof key,key);
 					if(typeof key == "string"){
 						key = (new TextEncoder()).encode(key);
 					}
