@@ -61,9 +61,7 @@ azn.jws = (function() {
 			try{
 				var alg = parsealg(header.alg);
 			} catch(e) {
-				return new Promise(function(resolve, reject){
-						reject(e);
-				});
+				return Promise.reject(e);
 			}
 			if(alg.name == "RSASSA-PKCS1-v1_5"){
 				if(typeof x == "string" || myTypeof(x) == "Object") {
@@ -82,9 +80,7 @@ azn.jws = (function() {
 				} else if (myTypeof(x) == "CryptoKey") {
 					return crypto.subtle.verify(alg.name,x,sig,data);
 				} else {
-					return new Promise(function(resolve, reject){
-							reject(new Error("invalid key for verify"));
-					});
+					return Promise.reject(new Error("invalid key for verify"));
 				}
 			} else if (alg.name == "HMAC") {
 				if(typeof x == "string" || isArrayBufferorArrayBufferView(x)){
@@ -102,9 +98,7 @@ azn.jws = (function() {
 				} else if (myTypeof(x) == "CryptoKey") {
 					return crypto.subtle.verify(alg.name,x,sig,data);
 				} else {
-					return new Promise(function(resolve, reject){
-							reject(new Error("invalid key for verify"));
-					});
+					return Promise.reject(new Error("invalid key for verify"));
 				}
 
 			}
@@ -113,9 +107,7 @@ azn.jws = (function() {
 			try{
 				var alg = parsealg(_alg);
 			} catch(e) {
-				return new Promise(function(resolve, reject){
-						reject(e);
-				});
+				return Promise.reject(e);
 			}
 			var header = { alg: _alg };
 			header = JSON.stringify(header);
@@ -153,9 +145,7 @@ azn.jws = (function() {
 							});
 						});
 				} else {
-					return new Promise(function(resolve, reject){
-							reject(new Error("invalid key for sign"));
-					});
+					return Promise.reject(new Error("invalid key for sign"));
 				}
 			} else if (alg.name == "HMAC") {
 				if(typeof key == "string" || isArrayBufferorArrayBufferView(key)){
@@ -183,9 +173,7 @@ azn.jws = (function() {
 								});
 							});
 				} else {
-					return new Promise(function(resolve, reject){
-							reject(new Error("invalid key for sign"));
-					});
+					return Promise.reject(new Error("invalid key for sign"));
 				}
 			}
 		},
