@@ -58,7 +58,13 @@ azn.jws = (function() {
 			var data = jws[0] + "." + jws[1];
 			data = (new TextEncoder()).encode(data);
 			var header = JSON.parse(atob(jws[0]));
-			var alg = parsealg(header.alg);
+			try{
+				var alg = parsealg(header.alg);
+			} catch(e) {
+				return new Promise(function(resolve, reject){
+						reject(e);
+				});
+			}
 			if(alg.name == "RSASSA-PKCS1-v1_5"){
 				if(typeof x == "string" || myTypeof(x) == "Object") {
 					if(typeof x == "string"){
@@ -76,7 +82,9 @@ azn.jws = (function() {
 				} else if (myTypeof(x) == "CryptoKey") {
 					return crypto.subtle.verify(alg.name,x,sig,data);
 				} else {
-					throw new Error("invalid key for verify");
+					return new Promise(function(resolve, reject){
+							reject(new Error("invalid key for verify"));
+					});
 				}
 			} else if (alg.name == "HMAC") {
 				if(typeof x == "string" || isArrayBufferorArrayBufferView(x)){
@@ -94,13 +102,21 @@ azn.jws = (function() {
 				} else if (myTypeof(x) == "CryptoKey") {
 					return crypto.subtle.verify(alg.name,x,sig,data);
 				} else {
-					throw new Error("invalid key for verify");
+					return new Promise(function(resolve, reject){
+							reject(new Error("invalid key for verify"));
+					});
 				}
 
 			}
 		},
 		sign: function(key,_alg,data){
-			var alg = parsealg(_alg);
+			try{
+				var alg = parsealg(_alg);
+			} catch(e) {
+				return new Promise(function(resolve, reject){
+						reject(e);
+				});
+			}
 			var header = { alg: _alg };
 			header = JSON.stringify(header);
 			header = btoa(header).replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"");
@@ -137,7 +153,9 @@ azn.jws = (function() {
 							});
 						});
 				} else {
-					throw new Error("invalid key for sign");
+					return new Promise(function(resolve, reject){
+							reject(new Error("invalid key for sign"));
+					});
 				}
 			} else if (alg.name == "HMAC") {
 				if(typeof key == "string" || isArrayBufferorArrayBufferView(key)){
@@ -165,7 +183,9 @@ azn.jws = (function() {
 								});
 							});
 				} else {
-					throw new Error("invalid key for sign");
+					return new Promise(function(resolve, reject){
+							reject(new Error("invalid key for sign"));
+					});
 				}
 			}
 		},
