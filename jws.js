@@ -1,7 +1,7 @@
 "use strict";
 var azn = azn || {};
 azn.jws = (function() {
-	function parsealg(input){
+	function parseJwsAlg(input){
 		var output = {};
 			if(input == "RS256"){
 				output.name = "RSASSA-PKCS1-v1_5";
@@ -59,7 +59,7 @@ azn.jws = (function() {
 			data = (new TextEncoder()).encode(data);
 			var header = JSON.parse(atob(jws[0]));
 			try{
-				var alg = parsealg(header.alg);
+				var alg = parseJwsAlg(header.alg);
 			} catch(e) {
 				return Promise.reject(e);
 			}
@@ -103,13 +103,13 @@ azn.jws = (function() {
 
 			}
 		},
-		sign: function(key,_alg,data){
+		sign: function(key,jwsalg,data){
 			try{
-				var alg = parsealg(_alg);
+				var alg = parseJwsAlg(jwsalg);
 			} catch(e) {
 				return Promise.reject(e);
 			}
-			var header = { alg: _alg };
+			var header = { alg: jwsalg };
 			header = JSON.stringify(header);
 			header = btoa(header).replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"");
 			data = JSON.stringify(data);
@@ -122,7 +122,7 @@ azn.jws = (function() {
 					if(typeof key == "string"){
 						key = JSON.parse(key);
 					}
-					key.alg = _alg;//TODO: autodetect alg
+					key.alg = jwsalg;//TODO: autodetect alg
 					return crypto.subtle.importKey("jwk",
 							key,
 							alg,
