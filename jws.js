@@ -26,7 +26,7 @@ azn.jws = (function() {
 			}
 			return output;
 	}
-	function myTypeof(input){
+	function classof(input){
 		return Object.prototype.toString.call(input).slice(8,-1);
 	}
 	function isArrayBufferorArrayBufferView(input){
@@ -64,7 +64,7 @@ azn.jws = (function() {
 				return Promise.reject(e);
 			}
 			if(alg.name == "RSASSA-PKCS1-v1_5"){
-				if(typeof x == "string" || myTypeof(x) == "Object") {
+				if(typeof x == "string" || classof(x) == "Object") {
 					if(typeof x == "string"){
 						x = JSON.parse(x);
 					}
@@ -77,7 +77,7 @@ azn.jws = (function() {
 							).then(function(key){
 								return crypto.subtle.verify(alg.name,key,sig,data);
 							});
-				} else if (myTypeof(x) == "CryptoKey") {
+				} else if (classof(x) == "CryptoKey") {
 					return crypto.subtle.verify(alg.name,x,sig,data);
 				} else {
 					return Promise.reject(new Error("invalid key for verify"));
@@ -95,7 +95,7 @@ azn.jws = (function() {
 							).then(function(key){
 								return crypto.subtle.verify(alg.name,key,sig,data);
 							});
-				} else if (myTypeof(x) == "CryptoKey") {
+				} else if (classof(x) == "CryptoKey") {
 					return crypto.subtle.verify(alg.name,x,sig,data);
 				} else {
 					return Promise.reject(new Error("invalid key for verify"));
@@ -118,7 +118,7 @@ azn.jws = (function() {
 			var signinputstr = signinput;
 			signinput = (new TextEncoder()).encode(signinput);
 			if(alg.name == "RSASSA-PKCS1-v1_5"){
-				if(typeof key == "string" || myTypeof(key) == "Object") {
+				if(typeof key == "string" || classof(key) == "Object") {
 					if(typeof key == "string"){
 						key = JSON.parse(key);
 					}
@@ -136,7 +136,7 @@ azn.jws = (function() {
 									resolve(signinputstr+"."+azn.b64url.encode(sign));
 								});
 							});
-				} else if (myTypeof(key) == "CryptoKey") {
+				} else if (classof(key) == "CryptoKey") {
 					return crypto.subtle.sign(alg.name,key,signinput)
 						.then(function(sign){
 							return new Promise(function(resolve, reject){
@@ -165,7 +165,7 @@ azn.jws = (function() {
 								resolve(signinputstr+"."+azn.b64url.encode(sign));
 							});
 						});
-				} else if (myTypeof(key) == "CryptoKey") {
+				} else if (classof(key) == "CryptoKey") {
 							return crypto.subtle.sign(alg.name,key,signinput).then(function(sign){
 								return new Promise(function(resolve, reject){
 									sign = new Uint8Array(sign);
