@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Jasmine Spec Runner v2.0.3</title>
+
+  <link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-2.0.3/jasmine_favicon.png">
+  <link rel="stylesheet" type="text/css" href="jasmine/lib/jasmine-2.0.3/jasmine.css">
+  <link href="style/style.css" type="text/css" rel="stylesheet">
+
+
+  <script type="text/javascript" src="jasmine/lib/jasmine-2.0.3/jasmine.js"></script>
+  <script type="text/javascript" src="jasmine/lib/jasmine-2.0.3/jasmine-html.js"></script>
+  <script type="text/javascript" src="jasmine/lib/jasmine-2.0.3/boot.js"></script>
+
+  <!-- include source files here... -->
+
+  <!-- include spec files here... -->
+
+</head>
+
+<body>
+<script src="b64mod.js"></script>
+<script src="jws.js"></script>
+<script>
+describe("HMAC", function(){
+		it("HMAC SHA-256",function(done){
+			azn.jws.verify('hoge','eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.eExAbqMRgGEI8N62_fE50KyQpbHokNV_GgxR9bPmfMY').then(function(x){ expect(x).toBe(true); done(); });
+		});
+		it("HMAC SHA-384",function(done){
+			azn.jws.verify('hoge','eyJhbGciOiJIUzM4NCJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.rKUUas8C2KblDZC_z_2dWLFhkxzGWzHZLX12HlLRxOYBrnHQGQz_3yE6YcBMSCIJ').then(function(x){ expect(x).toBe(true); done(); });
+		});
+		it("HMAC SHA-512",function(done){
+			azn.jws.verify('hoge','eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.CtuBQVt3dYfnCPvk7bm1z4jnbZA-2xs5c8F5KPF5QRAATZ1rpwvlI1oPbbrR8E2PehKewWPpv_z6QzwV0LY4Vw').then(function(x){ expect(x).toBe(true); done(); });
+			});
+		it("HMAC SHA-256 wrong key fails",function(done){
+			azn.jws.verify('hogee','eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.eExAbqMRgGEI8N62_fE50KyQpbHokNV_GgxR9bPmfMY').then(function(x){ expect(x).toBe(false); done(); });
+			});
+		it("HMAC SHA-384 wrong key fails",function(done){
+			azn.jws.verify('hogee','eyJhbGciOiJIUzM4NCJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.rKUUas8C2KblDZC_z_2dWLFhkxzGWzHZLX12HlLRxOYBrnHQGQz_3yE6YcBMSCIJ').then(function(x){ expect(x).toBe(false); done(); });
+			});
+		it("HMAC SHA-512 wrong key fails",function(done){
+			azn.jws.verify('hogee','eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.CtuBQVt3dYfnCPvk7bm1z4jnbZA-2xs5c8F5KPF5QRAATZ1rpwvlI1oPbbrR8E2PehKewWPpv_z6QzwV0LY4Vw').then(function(x){ expect(x).toBe(false); done(); });
+			});
+		it("HMAC SHA-256 wrong key fails(key is CryptoKey)",function(done){
+			azn.jws.verify(globalarr[0],'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.eExAbqMRgGEI8N62_fE50KyQpbHokNV_GgxR9bPmfMY').then(function(x){ expect(x).toBe(false); done(); });
+			});
+		it("HMAC SHA-256 round-trip",function(done){
+				azn.jws.sign("hoge","HS256",{ "iss":"joe", "exp":1300819380, "http://example.com/is_root":true }).then(function(signed){
+					azn.jws.verify("hoge",signed).then(function(x){ expect(x).toBe(true); done(); });
+					});
+			});
+		it("HMAC SHA-256 round-trip(key is CryptoKey)",function(done){
+				azn.jws.sign(globalarr[0],"HS256",{ "iss":"joe", "exp":1300819380, "http://example.com/is_root":true }).then(function(signed){
+					azn.jws.verify(globalarr[0],signed).then(function(x){ expect(x).toBe(true); done(); });
+					});
+			});
+		var ab = new ArrayBuffer(16);
+		var abv = new Uint8Array(ab);
+		abv[0] = 2;
+		var ab2 = new ArrayBuffer(1024);
+		var abv2 = new Uint8Array(ab2);
+		abv2[0] = 2;
+		console.log(ab,abv);
+		console.log(ab2,abv2);
+		it("HMAC SHA-256 round-trip(key is ArrayBuffer)",function(done){
+				azn.jws.sign(ab,"HS256",{ "iss":"joe", "exp":1300819380, "http://example.com/is_root":true }).then(function(signed){
+					azn.jws.verify(ab,signed).then(function(x){ expect(x).toBe(true); done(); });
+					});
+			});
+		it("HMAC SHA-256 round-trip(key is ArrayBufferView)",function(done){
+				azn.jws.sign(abv,"HS256",{ "iss":"joe", "exp":1300819380, "http://example.com/is_root":true }).then(function(signed){
+					azn.jws.verify(abv,signed).then(function(x){ expect(x).toBe(true); done(); });
+					});
+			});
+		it("HMAC SHA-256 verify fails. key is array(invalid)",function(done){
+			azn.jws.verify([],'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.eExAbqMRgGEI8N62_fE50KyQpbHokNV_GgxR9bPmfMY').catch(function(x){ expect(x instanceof Error).toBe(true); done();});
+			});
+		it("HMAC SHA-256 sign fails. key is array(invalid)",function(done){
+			azn.jws.sign([],"HS256",{ "iss":"joe", "exp":1300819380, "http://example.com/is_root":true }).catch(function(x){ expect(x instanceof Error).toBe(true); done();});
+			});
+		});
+it("sign fails. invalid algorithm",function(done){
+		azn.jws.sign([],"AA256",{ "iss":"joe", "exp":1300819380, "http://example.com/is_root":true }).catch(function(x){ expect(x instanceof Error).toBe(true); done();});
+		});
+it("verify fails. key is array(invalid) and algorithm is unsupported.",function(done){
+		azn.jws.verify([],'eyJhbGciOiJFUzUxMiJ9.UGF5bG9hZA.AdwMgeerwtHoh-l192l60hp9wAHZFVJbLfD_UxMi70cwnZOYaRI1bKPWROc-mZZqwqT2SI-KGDKB34XO0aw_7XdtAG8GaSwFKdCAPZgoXD2YBJZCPEX3xKpRwcdOO8KpEHwJjyqOgzDO7iKvU8vcnwNrmxYbSW9ERBXukOXolLzeO_Jn').catch(function(x){ expect(x instanceof Error).toBe(true); done();});
+		});
+describe("RSA", function(){
+
+		it("RSA SHA-256",function(done){
+			azn.jws.verify('{"e":"AQAB","n":"pMmw1Cq8wVDR-ymEHgAx_W2xlCNWcZvZbCJnmAIm2ZA0rLbv_5ToiJyg-28TR337xNIYrZybZi83BVGIc3H5IsP7OobiDooUTNFxs3SavR0U9y1VgcoFhyazlIclONvsTM7-Q1gC0dbJsluFG8MHnzeOgn0_3yn_h3Gm58KrTd0","kty":"RSA"}','eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.SsaZLCaHr2QRnkF2HYUXPA0dEtmhQBVLhNKytClA0uCQpoKpmv8E_XrcZ1IVxr8RhlKQk3H5XIYCcaT7vjCx8V49IUsLhSbGa7dNe1UJaHgq5Vd6Wf8Wq6jYanme00b2I22uJOIH3eKiFiJ0W30SCyrDqv_OwUswh7oDzZ01nww').then(function(x){ expect(x).toBe(true); done(); });
+			});
+		it("RSA SHA-384",function(done){
+			azn.jws.verify('{"e":"AQAB","n":"pMmw1Cq8wVDR-ymEHgAx_W2xlCNWcZvZbCJnmAIm2ZA0rLbv_5ToiJyg-28TR337xNIYrZybZi83BVGIc3H5IsP7OobiDooUTNFxs3SavR0U9y1VgcoFhyazlIclONvsTM7-Q1gC0dbJsluFG8MHnzeOgn0_3yn_h3Gm58KrTd0","kty":"RSA"}','eyJhbGciOiJSUzM4NCJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.aan80dJk0lqGj82PAThOsBsHYdG9ouokpuZqcXRxJcLzmV_bJTSTmDKiTy0M8d-NXHtMXs7tEi2mCbV5SHRx8LdNnranzhONLT5TcFTAAq-p3HJ-ztYFfyqjzRsqOIs88QparfTlkvRQp9rQXhKknUvgDXE4U2QWDubJAVyUgPw').then(function(x){ expect(x).toBe(true); done(); });
+			});
+		it("RSA SHA-512",function(done){
+			azn.jws.verify('{"e":"AQAB","n":"pMmw1Cq8wVDR-ymEHgAx_W2xlCNWcZvZbCJnmAIm2ZA0rLbv_5ToiJyg-28TR337xNIYrZybZi83BVGIc3H5IsP7OobiDooUTNFxs3SavR0U9y1VgcoFhyazlIclONvsTM7-Q1gC0dbJsluFG8MHnzeOgn0_3yn_h3Gm58KrTd0","kty":"RSA"}','eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.AJ6Jgx5TxokqBBSvZl_Xd0dQak9LhJEwkNKzbOei-yeQ1cKvA7yZZ6pFUQY_P1-396fZnJ7-0KtZ_-N72av7HYro56LKplx6mbvTxRAZfVaovACHErtLDtYKK47jJOOHq2fQ74d2l7kwKE_Jgx03qC5aRKzq0ol9dsvDiSoMaXw').then(function(x){ expect(x).toBe(true); done(); });
+			});
+		it("RSA SHA-256(key is object)",function(done){
+			azn.jws.verify({"e":"AQAB","n":"pMmw1Cq8wVDR-ymEHgAx_W2xlCNWcZvZbCJnmAIm2ZA0rLbv_5ToiJyg-28TR337xNIYrZybZi83BVGIc3H5IsP7OobiDooUTNFxs3SavR0U9y1VgcoFhyazlIclONvsTM7-Q1gC0dbJsluFG8MHnzeOgn0_3yn_h3Gm58KrTd0","kty":"RSA"},'eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.SsaZLCaHr2QRnkF2HYUXPA0dEtmhQBVLhNKytClA0uCQpoKpmv8E_XrcZ1IVxr8RhlKQk3H5XIYCcaT7vjCx8V49IUsLhSbGa7dNe1UJaHgq5Vd6Wf8Wq6jYanme00b2I22uJOIH3eKiFiJ0W30SCyrDqv_OwUswh7oDzZ01nww').then(function(x){ expect(x).toBe(true); done(); });
+			});
+		it("RSA SHA-384(key is object)",function(done){
+			azn.jws.verify({"e":"AQAB","n":"pMmw1Cq8wVDR-ymEHgAx_W2xlCNWcZvZbCJnmAIm2ZA0rLbv_5ToiJyg-28TR337xNIYrZybZi83BVGIc3H5IsP7OobiDooUTNFxs3SavR0U9y1VgcoFhyazlIclONvsTM7-Q1gC0dbJsluFG8MHnzeOgn0_3yn_h3Gm58KrTd0","kty":"RSA"},'eyJhbGciOiJSUzM4NCJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.aan80dJk0lqGj82PAThOsBsHYdG9ouokpuZqcXRxJcLzmV_bJTSTmDKiTy0M8d-NXHtMXs7tEi2mCbV5SHRx8LdNnranzhONLT5TcFTAAq-p3HJ-ztYFfyqjzRsqOIs88QparfTlkvRQp9rQXhKknUvgDXE4U2QWDubJAVyUgPw').then(function(x){ expect(x).toBe(true); done(); });
+			});
+		it("RSA SHA-512(key is object)",function(done){
+			azn.jws.verify({"e":"AQAB","n":"pMmw1Cq8wVDR-ymEHgAx_W2xlCNWcZvZbCJnmAIm2ZA0rLbv_5ToiJyg-28TR337xNIYrZybZi83BVGIc3H5IsP7OobiDooUTNFxs3SavR0U9y1VgcoFhyazlIclONvsTM7-Q1gC0dbJsluFG8MHnzeOgn0_3yn_h3Gm58KrTd0","kty":"RSA"},'eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.AJ6Jgx5TxokqBBSvZl_Xd0dQak9LhJEwkNKzbOei-yeQ1cKvA7yZZ6pFUQY_P1-396fZnJ7-0KtZ_-N72av7HYro56LKplx6mbvTxRAZfVaovACHErtLDtYKK47jJOOHq2fQ74d2l7kwKE_Jgx03qC5aRKzq0ol9dsvDiSoMaXw').then(function(x){ expect(x).toBe(true); done(); });
+			});
+		it("RSA SHA-256 wrong sig",function(done){
+			azn.jws.verify('{"e":"AQAB","n":"pMmw1Cq8wVDR-ymEHgAx_W2xlCNWcZvZbCJnmAIm2ZA0rLbv_5ToiJyg-28TR337xNIYrZybZi83BVGIc3H5IsP7OobiDooUTNFxs3SavR0U9y1VgcoFhyazlIclONvsTM7-Q1gC0dbJsluFG8MHnzeOgn0_3yn_h3Gm58KrTd0","kty":"RSA"}','eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.SsaZLCaHr2QRnkF2HYUXPA0dEtmhQBVLhNKytClA0uCQpoKpmv8E_XrcZ1IVxr8RhlKQk3H5XIYCcaT7vjCx8V49IUsLhSbGa7dNe1UJaHgq5Vd6Wf8Wq6jYanme00b2I22uJOIH3eKiFiJ0W30SCyrDqv_OwUswh7oDzZ01nw0').then(function(x){ expect(x).toBe(false); done(); });
+			});
+		it("RSA SHA-384 wrong sig",function(done){
+			azn.jws.verify('{"e":"AQAB","n":"pMmw1Cq8wVDR-ymEHgAx_W2xlCNWcZvZbCJnmAIm2ZA0rLbv_5ToiJyg-28TR337xNIYrZybZi83BVGIc3H5IsP7OobiDooUTNFxs3SavR0U9y1VgcoFhyazlIclONvsTM7-Q1gC0dbJsluFG8MHnzeOgn0_3yn_h3Gm58KrTd0","kty":"RSA"}','eyJhbGciOiJSUzM4NCJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.aan80dJk0lqGj82PAThOsBsHYdG9ouokpuZqcXRxJcLzmV_bJTSTmDKiTy0M8d-NXHtMXs7tEi2mCbV5SHRx8LdNnranzhONLT5TcFTAAq-p3HJ-ztYFfyqjzRsqOIs88QparfTlkvRQp9rQXhKknUvgDXE4U2QWDubJAVyUgP0').then(function(x){ expect(x).toBe(false); done(); });
+			});
+		it("RSA SHA-512 wrong sig",function(done){
+			azn.jws.verify('{"e":"AQAB","n":"pMmw1Cq8wVDR-ymEHgAx_W2xlCNWcZvZbCJnmAIm2ZA0rLbv_5ToiJyg-28TR337xNIYrZybZi83BVGIc3H5IsP7OobiDooUTNFxs3SavR0U9y1VgcoFhyazlIclONvsTM7-Q1gC0dbJsluFG8MHnzeOgn0_3yn_h3Gm58KrTd0","kty":"RSA"}','eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.AJ6Jgx5TxokqBBSvZl_Xd0dQak9LhJEwkNKzbOei-yeQ1cKvA7yZZ6pFUQY_P1-396fZnJ7-0KtZ_-N72av7HYro56LKplx6mbvTxRAZfVaovACHErtLDtYKK47jJOOHq2fQ74d2l7kwKE_Jgx03qC5aRKzq0ol9dsvDiSoMaX0').then(function(x){ expect(x).toBe(false); done(); });
+			});
+		var rtkey = '{"alg":"RS256","d":"gp_7WimaDXeJTwo81Ezaa7qW5-Li3Yj7PWJsEEQk5une0U9YlzPhU_rE4tyt0iS9A89MZs0jWp4ud9IOUuTZtgsO7CIme5vQADMYEZt-1cYberLpBSTITR9KoHP8IoMJ76jAgfN8LF0aLl2RPu4SXnyr7w5KHECFDdNQqT8tWxk","dp":"Tyv_WF1r0N3Rj0RX_Qtz99eX7bpxJ-B4KYu0D_sezvKECYLcpwjP8nAQqh09BBWDwPWmNSicmlINRKfN3fOacQ","dq":"f9UuZA4W7NxvFHczrUwkeuibM7y5TAaIMfeFoBPM9zV-YYO8VgDS-cm8KSAT10FlXT_wRqDOCWDdU3rP93p80w","e":"AQAB","ext":true,"key_ops":["sign"],"kty":"RSA","n":"oLee2dDJRg0f0aXqGLYWDZPCw2xe7nUFmJTXXPqrvr82gaisW5sdE3cM6rxhxNv1xnuEVyG9RXlqhY2z6jcF1d9dGGbilZbVUwCWjy4Zg5VNzl_EUPTGERK8DUXtV0uQ-lzknyKRbNWQv_6MwP33lr6Ri5ntjbFxrg7M7htFJkU","p":"zXGXcEbAptFl5m99nza-6x1u50qsGIFrYhOZdX2YeDAyj0Y0e_XafQpUb7hjl2uF8dLTGtQl-svvsBjWyKF0Fw","q":"yERhpsRxuDztE-JbkGcD9z5Q9soiwGLR9yyBUPoNUoZ06hlI_67JfAeZpjoz-b26lWL-Tu_UfbBzLCQs7oHGAw","qi":"JO5W_V1rKKYUGqHw4gAPmDJw3VDqQWu0yYn6zmyvIf9R_MGO-Unm_bC1xhZPjRL24ULjB13fniAEDq3PO7JTXA"}';
+		it("RSA SHA-256 round-trip",function(done){
+				azn.jws.sign(rtkey,"RS256",{ "iss":"joe", "exp":1300819380, "http://example.com/is_root":true }).then(function(signed){
+					azn.jws.verify(rtkey,signed).then(function(x){ expect(x).toBe(true); done(); });
+					});
+			});
+		it("RSA SHA-256 round-trip(key is CryptoKey)",function(done){
+				azn.jws.sign(globalarr[1].privateKey,"RS256",{ "iss":"joe", "exp":1300819380, "http://example.com/is_root":true }).then(function(signed){
+					azn.jws.verify(globalarr[1].publicKey,signed).then(function(x){ expect(x).toBe(true); done(); });
+					});
+			});
+		it("RSA SHA-256 sign. key is array(invalid)",function(done){
+			azn.jws.sign([],"RS256",{ "iss":"joe", "exp":1300819380, "http://example.com/is_root":true }).catch(function(x){ expect(x instanceof Error).toBe(true); done();});
+			});
+		it("RSA SHA-256 verify. key is array(invalid)",function(done){
+			azn.jws.verify([],'eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlLCJpc3MiOiJqb2UifQ.SsaZLCaHr2QRnkF2HYUXPA0dEtmhQBVLhNKytClA0uCQpoKpmv8E_XrcZ1IVxr8RhlKQk3H5XIYCcaT7vjCx8V49IUsLhSbGa7dNe1UJaHgq5Vd6Wf8Wq6jYanme00b2I22uJOIH3eKiFiJ0W30SCyrDqv_OwUswh7oDzZ01nww').catch(function(x){ expect(x instanceof Error).toBe(true); done();});
+			});
+		});
+var globalarr;
+Promise.all([crypto.subtle.generateKey({name:"HMAC",hash: "SHA-256",length:8},true,["verify","sign"]),
+		crypto.subtle.generateKey({  name: "RSASSA-PKCS1-v1_5", hash: "SHA-256", modulusLength: 1024, publicExponent: new Uint8Array([0x01, 0x00, 0x01])  },true,["verify","sign"]),
+
+	   ]).then(function(x){
+		   globalarr = x;
+		jasmine.execute();
+		});
+</script>
+	
+</body>
+</html>
